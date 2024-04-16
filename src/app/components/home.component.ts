@@ -55,7 +55,8 @@ export class HomeComponent implements AfterViewInit {
    effect(() => {
       if(this.formatText()) {
         this.displayedColumns.set(['position', 'name', 'weight', 'symbol'])
-    }}, { allowSignalWrites: true });
+      }
+    }, { allowSignalWrites: true });
   }
 
   ngAfterViewInit() {
