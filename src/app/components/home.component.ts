@@ -1,6 +1,6 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, effect, signal, ViewChild, WritableSignal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, effect, EventEmitter, Input, Output, signal, ViewChild, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -9,16 +9,11 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FormatTextPipe } from '../format-text-pipe';
 
 @Component({
-  selector: 'app-robots-list',
+  selector: 'app-home',
   standalone: true,
   imports: [CommonModule, MatListModule, MatButtonModule, MatIconModule, MatTableModule, CdkDropList, CdkDrag, MatPaginatorModule, FormatTextPipe],
   template: `
   <div class="mat-elevation-z8">
-    <button mat-raised-button (click)="changeFormatText()">
-      Změna velikosti textu tabulky
-    </button>
-    <button mat-raised-button (click)="shuffleCols()"> Změna pořadí sloupečků </button>
-
     <table mat-table [dataSource]="dataSource" cdkDropList
        cdkDropListOrientation="horizontal"
        (cdkDropListDropped)="drop($event)">
@@ -46,16 +41,21 @@ import { FormatTextPipe } from '../format-text-pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent implements AfterViewInit {
-  displayedColumns = signal(['position', 'name', 'weight', 'symbol']);
+  @Input() displayedColumns: WritableSignal<string[]> = signal([]);
+  @Input() formatText: WritableSignal<string> = signal('');
+
+  @Output() removeColAction: EventEmitter<string> = new EventEmitter();
+
   pageSizeOptions: WritableSignal<number[]> = signal([5, 10, 20]);
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-
-  formatText = signal('upprcase');
 
   @ViewChild(MatPaginator) paginator: any = MatPaginator;
 
   constructor() {
-    effect(() => {
+   effect(() => {
+      //console.log(this.displayedColumns())
+      //console.log(this.formatText())
+
       if(this.formatText()) {
         this.displayedColumns.set(['position', 'name', 'weight', 'symbol'])
     }}, { allowSignalWrites: true });
@@ -65,35 +65,12 @@ export class HomeComponent implements AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  shuffleCols() {
-    let currentIndex = this.displayedColumns().length;
-    while (0 !== currentIndex) {
-      const randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      const temp = this.displayedColumns()[currentIndex];
-      this.displayedColumns()[currentIndex] = this.displayedColumns()[randomIndex];
-      this.displayedColumns()[randomIndex] = temp;
-    }
-  }
-
-  changeFormatText() {
-    if (this.formatText() === 'uppercase') {
-      this.formatText.set('lowercase');
-    } else {
-      this.formatText.set('uppercase');
-    }
-  }
-
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns(), event.previousIndex, event.currentIndex);
   }
 
   removeCol(col: string) {
-    this.displayedColumns.update((cols: string[]) => {
-      cols = cols.filter((item: string) => item !== col);
-      return [...cols];
-    })
+    this.removeColAction.emit(col);
   }
 }
 

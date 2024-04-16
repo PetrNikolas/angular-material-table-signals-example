@@ -74,6 +74,22 @@
         "hash": "13044518069027839699"
       },
       {
+        "file": ".nx/cache/file-map.json",
+        "hash": "886004980685256416"
+      },
+      {
+        "file": ".nx/cache/lockfile.hash",
+        "hash": "13581049986779227326"
+      },
+      {
+        "file": ".nx/cache/parsed-lock-file.json",
+        "hash": "5274269729298998993"
+      },
+      {
+        "file": ".nx/cache/project-graph.json",
+        "hash": "1466805237553944834"
+      },
+      {
         "file": ".prettierrc",
         "hash": "9909504235762269481"
       },
