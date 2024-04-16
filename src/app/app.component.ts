@@ -34,17 +34,19 @@ export class AppComponent {
 
   shuffleCols() {
     let currentIndex = this.displayedColumns().length;
-    while (0 !== currentIndex) {
-      const randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
 
-      const displayedColumns = this.displayedColumns();
+    this.displayedColumns.update((cols: string[]) => {
+      while (0 !== currentIndex) {
+        const randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
 
-      const temp = displayedColumns[currentIndex];
-      displayedColumns[currentIndex] = displayedColumns[randomIndex];
-      displayedColumns[randomIndex] = temp;
-      this.displayedColumns.set(displayedColumns);
-    }
+        const temp = cols[currentIndex];
+        cols[currentIndex] = cols[randomIndex];
+        cols[randomIndex] = temp;
+      }
+
+      return [...cols];
+    })
   }
 
   changeFormatText() {

@@ -53,9 +53,6 @@ export class HomeComponent implements AfterViewInit {
 
   constructor() {
    effect(() => {
-      //console.log(this.displayedColumns())
-      //console.log(this.formatText())
-
       if(this.formatText()) {
         this.displayedColumns.set(['position', 'name', 'weight', 'symbol'])
     }}, { allowSignalWrites: true });
